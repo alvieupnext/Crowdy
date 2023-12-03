@@ -23,7 +23,29 @@ app.use('/', express.static('public'));
 //     res.header('Access-Control-Expose-Headers', 'X-Head-Count');
 //     next();
 //   });
+
+//Before starting the server, delete all the images in public/camera_images
+const directory = path.join(__dirname, 'public/camera_images');
+// Delete all the files in the directory
+fs.readdir(directory, (err, files) => {
+    if (err) {
+      console.error('Error reading directory:', err);
+      return;
+    }
   
+    // Iterate through the files and delete each one
+    files.forEach((file) => {
+      const filePath = path.join(directory, file);
+  
+      fs.unlink(filePath, (unlinkErr) => {
+        if (unlinkErr) {
+          console.error('Error deleting file:', unlinkErr);
+        } else {
+          console.log(`Deleted file: ${filePath}`);
+        }
+      });
+    });
+  });
 
 //This server is the middle point between all other servers
 
