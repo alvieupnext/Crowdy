@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Crowdy</title>
+    <style>
+        .centering {
+            text-align: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 400px); /* Explicit height for rows */
+            width: 1200px;
+            height: 800px;
+            gap: 10px;
+            margin: auto; /* Center the grid horizontally */
+        }
+        .grid-item {
+            display: flex;
+            position: relative;
+            border: 1px solid black;
+        }
+        .camera-name {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: small;
+            z-index: 10;
+        }
+        .camera-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 3em; /* Larger font size for the camera number */
+            z-index: 10;
+        }
+        .grid-item img {
+        max-width: 100%; /* Makes the image width not exceed the grid item's width */
+        max-height: 100%; /* Makes the image height not exceed the grid item's height */
+        object-fit: contain; /* Ensures the image maintains its aspect ratio */
+        display: block; /* Removes any extra space below the image */
+    }
+    </style>
+</head>
+<body>
+    <h1 class="centering">Crowdy</h1>
+    <h3 class="centering">Always watching, whether you like it or not!</h3>
+    <!-- Add a Head Count of all the cameras here which can be changed by the script -->
+    <h3 class="centering" id="head-count">Head Count: 0</h3>
+    <div class="centering">
+        <canvas class="centering" id="stockCanvas" width="800" height="200" style="border:1px solid #000000; scroll-behavior: auto">
+        </canvas>
+    </div>
+    <br>
+     <!-- Form for selecting a camera and submitting -->
+     <!-- <div class="centering" style="margin-bottom: 20px;">
+        <form action="http://localhost:3000/crowdy/image" method="post" enctype="multipart/form-data">
+            <div>
+                <label for="imageFileField">Upload image:</label>
+                <input type="file" name="imageFileField" id="imageFileField" />
+            </div>
+            <label for="camera-select">Choose a Camera:</label>
+            <select name="cameraId" id="camera-select">
+                <option value="1">Camera 1</option>
+                <option value="2">Camera 2</option>
+                <option value="3">Camera 3</option>
+                <option value="4">Camera 4</option>
+                <option value="5">Camera 5</option>
+                <option value="6">Camera 6</option>
+            </select>
+            <input type="submit" value="Submit" />
+        </form>
+    </div> -->
+    <br>
+    <div class="grid-container">
+        <!-- Camera squares with unique IDs for numbers and default images -->
+        <div class="grid-item" >
+            <img src="camera_images/1.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-1" alt="Camera 1 Image">
+            <span class="camera-name">Camera 1</span>
+            <span class="camera-number" id="camera-num-1">0</span>
+        </div>
+        <!-- Repeat the structure for each camera -->
+        <div class="grid-item">
+            <img src="camera_images/2.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-2" alt="Camera 2 Image">
+            <span class="camera-name">Camera 2</span>
+            <span class="camera-number" id="camera-num-2">0</span>
+        </div>
+            <!-- Camera 3 with default image -->
+    <div class="grid-item">
+        <img src="camera_images/3.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-3" alt="Camera 3 Image">
+        <span class="camera-name">Camera 3</span>
+        <span class="camera-number" id="camera-num-3">0</span>
+    </div>
+
+    <!-- Camera 4 with default image -->
+    <div class="grid-item" >
+        <img src="camera_images/4.jpg" id="cam-4" onerror="this.onerror=null;this.src='videonotfound.png';" alt="Camera 4 Image">
+        <span class="camera-name">Camera 4</span>
+        <span class="camera-number" id="camera-num-4">0</span>
+    </div>
+
+    <!-- Camera 5 with default image -->
+    <div class="grid-item">
+        <img src="camera_images/5.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-5" alt="Camera 5 Image">
+        <span class="camera-name">Camera 5</span>
+        <span class="camera-number" id="camera-num-5">0</span>
+    </div>
+        <div class="grid-item" >
+            <img src="camera_images/5.jpg" onerror="this.onerror=null;this.src='videonotfound.png';"id="cam-6" alt="Camera 6 Image">
+            <span class="camera-name">Camera 6</span>
+            <span class="camera-number" id="camera-num-6">0</span>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
