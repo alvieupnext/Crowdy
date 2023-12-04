@@ -43,6 +43,11 @@ app.post("/crowdy/image/count", async (req, res, next) => {
     })
 })
 
+//Add a /health endpoint to check if the server is running
+app.get('/health', (req, res) => {
+    res.send('Server is running');
+});
+
 app.listen(port, () => {
     console.log(`Head counting server running on port ${port}`)
 })

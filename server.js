@@ -100,6 +100,11 @@ app.post("/crowdy/image", async (req, res, next) => {
     });
 });
 
+//Add a /health endpoint to check if the server is running
+app.get('/health', (req, res) => {
+    res.send('Server is running');
+});
+
 function hexToJson(hexStr) {
     // Convert the hex string to a byte array
     const byteArray = new Uint8Array(hexStr.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));

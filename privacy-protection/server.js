@@ -38,6 +38,11 @@ app.post("/crowdy/image/blur", async (req, res, next) => {
     });
 });
 
+//Add a /health endpoint to check if the server is running
+app.get('/health', (req, res) => {
+    res.send('Server is running');
+});
+
 async function blurFaces(filePath) {
     // Read the image file into a Buffer
     const imageBuffer = fs.readFileSync(filePath);
