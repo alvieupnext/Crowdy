@@ -68,7 +68,12 @@ const context = stockCanvas.getContext('2d');
 const barWidth = stockCanvas.clientWidth / 20;
 
 const nextPos = (x) => {
-    return x + barWidth + 5;
+    const newPos = x + barWidth + 5;
+    if (newPos > stockCanvas.clientWidth) {
+        initialPos = 0;
+        return initialPos;
+    }
+    return newPos;
 }
 
 const scale = 3;
@@ -130,6 +135,13 @@ const updateImages = () => {
                     imageElement.src = countData.imagePath
                 }
             };
+            const nextPos = (x) => {
+                const newPos = x + barWidth + 5;
+                if (newPos > stockCanvas.clientWidth) {
+                    return 0;
+                }
+                return newPos;
+            }
             xhr.send();
         })(i);
     }

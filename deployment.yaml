@@ -1,0 +1,222 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crowdy-complete
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: privacy-protection
+  namespace: crowdy-complete  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: privacy-protection
+  template:
+    metadata:
+      labels:
+        app: privacy-protection
+    spec:
+      containers:
+      - name: privacy-protection
+        image: privacy-protection
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8004
+        resources:
+          requests:
+            cpu: "500m"
+          limits:
+            cpu: "1"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8004
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-predict
+  namespace: crowdy-complete  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-predict
+  template:
+    metadata:
+      labels:
+        app: image-predict
+    spec:
+      containers:
+      - name: image-predict
+        image: image-predict
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8002
+        resources:
+          requests:
+            cpu: "250m"
+          limits:
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crowdy
+  namespace: crowdy-complete  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crowdy
+  template:
+    metadata:
+      labels:
+        app: crowdy
+    spec:
+      containers:
+      - name: crowdy
+        image: crowdy
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "250m"
+          limits:
+            cpu: "1"
+        env: # Environment variables are defined here
+        - name: PRIVACY_PROTECTION_SERVICE_HOST
+          value: "privacy-protection-clusterip" # The name of the ClusterIP service for privacy-protection
+        - name: PRIVACY_PROTECTION_SERVICE_PORT
+          value: "8004" # The port defined in the privacy-protection ClusterIP service
+        - name: IMAGE_PREDICT_SERVICE_HOST
+          value: "image-predict-clusterip" # The name of the ClusterIP service for image-predict
+        - name: IMAGE_PREDICT_SERVICE_PORT
+          value: "8002" # The port defined in the image-predict ClusterIP service
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+# ClusterIP service for crowdy
+apiVersion: v1
+kind: Service
+metadata:
+  name: crowdy-clusterip
+  namespace: crowdy-complete  
+spec:
+  selector:
+    app: crowdy
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+---
+# ClusterIP service for privacy-protection
+apiVersion: v1
+kind: Service
+metadata:
+  name: privacy-protection-clusterip
+  namespace: crowdy-complete  
+spec:
+  selector:
+    app: privacy-protection
+  ports:
+    - protocol: TCP
+      port: 8004
+      targetPort: 8004
+  type: ClusterIP
+---
+# ClusterIP service for image-predict
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-predict-clusterip
+  namespace: crowdy-complete  
+spec:
+  selector:
+    app: image-predict
+  ports:
+    - protocol: TCP
+      port: 8002
+      targetPort: 8002
+  type: ClusterIP
+---
+# LoadBalancer service to expose crowdy to the outside world
+apiVersion: v1
+kind: Service
+metadata:
+  name: crowdy-loadbalancer
+  namespace: crowdy-complete  
+spec:
+  selector:
+    app: crowdy
+  ports:
+    - protocol: TCP
+      port: 3000 # This is the port exposed externally
+      targetPort: 3000 # This is the port on the container
+  type: LoadBalancer
+---
+# Autoscaler for the Privacy Protection service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: privacy-protection-hpa
+  namespace: crowdy-complete  
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: privacy-protection
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
+# Autoscaler for the Image Prediction service
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: image-predict-hpa
+  namespace: crowdy-complete  
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: image-predict
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+

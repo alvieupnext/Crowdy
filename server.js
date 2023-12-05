@@ -48,10 +48,17 @@ fs.readdir(directory, (err, files) => {
   });
 
 //This server is the middle point between all other servers
+//Kubernetes will set the environment variables for the services
+const privacyProtectionHost = process.env["PRIVACY_PROTECTION_SERVICE_HOST"];
+const privacyProtectionPort = process.env["PRIVACY_PROTECTION_SERVICE_PORT"];
+const imagePredictHost = process.env["IMAGE_PREDICT_SERVICE_HOST"];
+const imagePredictPort = process.env["IMAGE_PREDICT_SERVICE_PORT"];
 
-//Privacy Protection server
-const privacyServerUrl = 'http://localhost:8004/crowdy/image/blur';
-const headCountingServerUrl = 'http://localhost:8002/crowdy/image/count';
+// Construct the service URLs using the environment variables
+const privacyServerUrl = `http://${privacyProtectionHost}:${privacyProtectionPort}/crowdy/image/blur`;
+const headCountingServerUrl = `http://${imagePredictHost}:${imagePredictPort}/crowdy/image/count`;
+
+// Use these URLs to make HTTP requests to other services
 
 //keep track of the 6 camera head counts in this array
 const cameraHeadCounts = [0, 0, 0, 0, 0, 0];

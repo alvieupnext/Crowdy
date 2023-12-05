@@ -14,6 +14,7 @@ function getRandomImage() {
 }
 
 const maxCameraNumber = 6;
+const port = 3000;
 
 function sendRandomImage() {
   const formData = new FormData();
@@ -21,14 +22,14 @@ function sendRandomImage() {
   //Generate a number from 1 to maxCameraNumber and add it to the form as cameraId
   formData.append('cameraId', Math.floor(Math.random() * maxCameraNumber) + 1);
 
-  axios.post('http://localhost:3000/crowdy/image', formData, {
+  axios.post(`http://localhost:${port}/crowdy/image`, formData, {
     ...formData.getHeaders(),
   })
   .then(response => {
     console.log('Image sent successfully');
   })
   .catch(error => {
-    console.error('Error sending image:', error);
+    console.log('Error sending image:');
   });
 }
 
