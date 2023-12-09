@@ -28,14 +28,15 @@ spec:
           requests:
             cpu: "500m"
           limits:
-            cpu: "1"
+            cpu: "2"
         livenessProbe:
           httpGet:
             path: /health
             port: 8004
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 5 
+          failureThreshold: 5 
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,15 +61,17 @@ spec:
         - containerPort: 8002
         resources:
           requests:
-            cpu: "250m"
-          limits:
             cpu: "500m"
+          limits:
+            cpu: "1"
         livenessProbe:
           httpGet:
             path: /health
             port: 8002
           initialDelaySeconds: 10
-          periodSeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5 
+          failureThreshold: 5 
 ---
 apiVersion: apps/v1
 kind: Deployment

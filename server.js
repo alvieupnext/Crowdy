@@ -86,20 +86,15 @@ app.post("/crowdy/image", async (req, res, next) => {
             //Turn it into a json object
             const json = hexToJson(Buffer.from(headCountResponse.data).toString('hex'));
             //From the response, parse the json to get the count
-            console.log(json);
             const numberOfPeople = json["count"];
             //Update the head count for the camera
             cameraHeadCounts[incomingFields.cameraId[0] - 1] = numberOfPeople;
             //Remove the public from the path
             const newOutputImagePath = outputImagePath.replace("./public/", "");
-            console.log(newOutputImagePath)
             //Update the image path for the camera
             cameraPaths[incomingFields.cameraId[0] - 1] = newOutputImagePath;
             console.log("Total number of people in the image: " + numberOfPeople);
             console.log("Total number of people in all images: " + cameraHeadCounts.reduce((a, b) => a + b, 0));
-            //Step 5: Get the correct image and head count from the document and update it
-            // document.getElementById(`cam-${incomingFields.cameraId[0]}`).src = outputImagePath;
-            // document.getElementById(`camera-num-${incomingFields.cameraId[0]}`).textContent = numberOfPeople;
 
         } catch (err) {
             next(err);

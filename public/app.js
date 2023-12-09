@@ -112,36 +112,29 @@ const updateImages = () => {
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     const countData = JSON.parse(xhr.responseText);
-                    console.log(countData.imagePath)
                     document.getElementById(`camera-num-${currentCameraId}`).textContent = countData.count;
                     const imageElement = document.getElementById(`cam-${currentCameraId}`);
                     //get the old image path
                     const oldImagePath = imageElement.src;
-                    console.log(oldImagePath)
                     //if the old image path isn't equal to the new image path or to the video not found image
                     if (!oldImagePath.includes(countData.imagePath) && !oldImagePath.includes("videonotfound.png")) {
                         const xhr = new XMLHttpRequest();
                         xhr.open('DELETE', oldImagePath);
                         xhr.onreadystatechange = () => {
-                            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                                console.log("Deleted old image")
-                            }
-                            else {
-                                console.log("Error deleting old image")
-                            }
-                        }
+                            if (xhr.readyState === XMLHttpRequest.DONE) {
+                                if (xhr.status === 200) {
+                                    console.log("Deleted old image");
+                                }
+                                else {
+                                    console.log(`Error deleting old image. Error: ${xhr.status}`);
+                                }
+                        };
+                    }
                         xhr.send();
                     }
                     imageElement.src = countData.imagePath
                 }
             };
-            const nextPos = (x) => {
-                const newPos = x + barWidth + 5;
-                if (newPos > stockCanvas.clientWidth) {
-                    return 0;
-                }
-                return newPos;
-            }
             xhr.send();
         })(i);
     }

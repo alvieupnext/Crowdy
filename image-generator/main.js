@@ -16,6 +16,8 @@ function getRandomImage() {
 const maxCameraNumber = 6;
 const port = 3000;
 
+let errorCount = 0;
+
 function sendRandomImage() {
   const formData = new FormData();
   formData.append('imageFileField', getRandomImage());
@@ -29,7 +31,8 @@ function sendRandomImage() {
     console.log('Image sent successfully');
   })
   .catch(error => {
-    console.log('Error sending image:');
+    errorCount++;
+    console.log(`Error sending image, amount of errors: ${errorCount}`);
   });
 }
 
