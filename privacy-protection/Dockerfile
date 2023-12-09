@@ -5,4 +5,4 @@ RUN npm install
 COPY . .
 RUN npm rebuild @tensorflow/tfjs-node --build-from-source
 EXPOSE 8004
-CMD ["node", "server.js"]
+CMD ["npm", "start"]

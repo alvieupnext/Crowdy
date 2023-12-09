@@ -55,7 +55,7 @@
         </canvas>
     </div>
     <br>
-     <!-- Form for selecting a camera and submitting -->
+     <!-- Form for selecting a camera and submitting, can be uncommented to enable a form request-->
      <!-- <div class="centering" style="margin-bottom: 20px;">
         <form action="http://localhost:3000/crowdy/image" method="post" enctype="multipart/form-data">
             <div>
@@ -76,19 +76,19 @@
     </div> -->
     <br>
     <div class="grid-container">
-        <!-- Camera squares with unique IDs for numbers and default images -->
-        <div class="grid-item" >
-            <img src="camera_images/1.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-1" alt="Camera 1 Image">
-            <span class="camera-name">Camera 1</span>
-            <span class="camera-number" id="camera-num-1">0</span>
-        </div>
-        <!-- Repeat the structure for each camera -->
-        <div class="grid-item">
-            <img src="camera_images/2.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-2" alt="Camera 2 Image">
-            <span class="camera-name">Camera 2</span>
-            <span class="camera-number" id="camera-num-2">0</span>
-        </div>
-            <!-- Camera 3 with default image -->
+    <!-- Camera 1 with default image -->
+    <div class="grid-item" >
+        <img src="camera_images/1.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-1" alt="Camera 1 Image">
+        <span class="camera-name">Camera 1</span>
+        <span class="camera-number" id="camera-num-1">0</span>
+    </div>
+    <!-- Camera 2 with default image -->
+    <div class="grid-item">
+        <img src="camera_images/2.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-2" alt="Camera 2 Image">
+        <span class="camera-name">Camera 2</span>
+        <span class="camera-number" id="camera-num-2">0</span>
+    </div>
+    <!-- Camera 3 with default image -->
     <div class="grid-item">
         <img src="camera_images/3.jpg" onerror="this.onerror=null;this.src='videonotfound.png';" id="cam-3" alt="Camera 3 Image">
         <span class="camera-name">Camera 3</span>
@@ -108,11 +108,12 @@
         <span class="camera-name">Camera 5</span>
         <span class="camera-number" id="camera-num-5">0</span>
     </div>
-        <div class="grid-item" >
-            <img src="camera_images/5.jpg" onerror="this.onerror=null;this.src='videonotfound.png';"id="cam-6" alt="Camera 6 Image">
-            <span class="camera-name">Camera 6</span>
-            <span class="camera-number" id="camera-num-6">0</span>
-        </div>
+    <!-- Camera 6 with default image -->
+    <div class="grid-item" >
+        <img src="camera_images/6.jpg" onerror="this.onerror=null;this.src='videonotfound.png';"id="cam-6" alt="Camera 6 Image">
+        <span class="camera-name">Camera 6</span>
+        <span class="camera-number" id="camera-num-6">0</span>
+    </div>
     </div>
     <script src="app.js"></script>
 </body>

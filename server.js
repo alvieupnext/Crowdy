@@ -10,19 +10,14 @@ import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+
+// Obtain the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
+// Create an express server
 const app = express();
 app.use('/', express.static('public'));
-
-
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', 'http://localhost:4400'); // or '*' for all origins
-//     res.header('Access-Control-Expose-Headers', 'X-Head-Count');
-//     next();
-//   });
 
 //Before starting the server, delete all the images in public/camera_images
 const directory = path.join(__dirname, 'public/camera_images');
@@ -49,10 +44,11 @@ fs.readdir(directory, (err, files) => {
 
 //This server is the middle point between all other servers
 //Kubernetes will set the environment variables for the services
-const privacyProtectionHost = process.env["PRIVACY_PROTECTION_SERVICE_HOST"];
-const privacyProtectionPort = process.env["PRIVACY_PROTECTION_SERVICE_PORT"];
-const imagePredictHost = process.env["IMAGE_PREDICT_SERVICE_HOST"];
-const imagePredictPort = process.env["IMAGE_PREDICT_SERVICE_PORT"];
+//Fallback to localhost if the environment variables are not set 
+const privacyProtectionHost = process.env["PRIVACY_PROTECTION_SERVICE_HOST"] || "localhost";
+const privacyProtectionPort = process.env["PRIVACY_PROTECTION_SERVICE_PORT"] || 8004;
+const imagePredictHost = process.env["IMAGE_PREDICT_SERVICE_HOST"] || "localhost";
+const imagePredictPort = process.env["IMAGE_PREDICT_SERVICE_PORT"] || 8002;
 
 // Construct the service URLs using the environment variables
 const privacyServerUrl = `http://${privacyProtectionHost}:${privacyProtectionPort}/crowdy/image/blur`;
@@ -76,11 +72,11 @@ app.post("/crowdy/image", async (req, res, next) => {
         try {
             console.log("Received camera upload picture request from the following camera:");
             console.log(incomingFields.cameraId[0]);
-            //Step 2: Send the images directly to the Privacy Protection server 
+            //Step 1: Send the images directly to the Privacy Protection server 
             const blurredImage = await sendImageToServer(incomingFiles.imageFileField[0].filepath, privacyServerUrl, incomingFields.cameraId[0]);
-            //Step 3: Save the image locally
+            //Step 2: Save the blurred image locally
             const outputImagePath = saveImageLocally(blurredImage, uuidv4());
-            //Step 4: Send the image to the Head Counting server
+            //Step 3: Send the image to the Head Counting server
             const headCountResponse = await sendImageToServer(outputImagePath, headCountingServerUrl);
             //Response is expected to be an arraybuffer
             //Turn it into a json object
@@ -107,6 +103,7 @@ app.get('/health', (req, res) => {
     res.send('Server is running');
 });
 
+// Function to Convert Hex String to JSON
 function hexToJson(hexStr) {
     // Convert the hex string to a byte array
     const byteArray = new Uint8Array(hexStr.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
@@ -151,20 +148,7 @@ function saveImageLocally(response, name) {
     }
 }
 
-
-// // Example usage
-// const imagePath = './test-image.png'; // Replace with your image path
-// const serverUrl = 'http://localhost:8004/crowdy/image/blur'; // Replace with your server URL
-// sendImageToServerAndSaveResponse(imagePath, serverUrl);
-
-
-
-// //Open index.html when accessing /
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/index.html');
-// });
-
-//get the count per cameraNumber
+//Get Request for the head count per camera
 app.get('/crowdy/count/:cameraNumber', (req, res) => {
     const cameraNumber = parseInt(req.params.cameraNumber);
 
@@ -181,7 +165,7 @@ app.get('/crowdy/count/:cameraNumber', (req, res) => {
     }
 });
 
-//get the sum 
+//Get Request for the total head count
 app.get('/crowdy/totalcount', (req, res) => {
 
     // Check if cameraNumber is between 1 and 6
@@ -192,18 +176,7 @@ app.get('/crowdy/totalcount', (req, res) => {
         ));
 });
 
-
-// app.get('/stock2', (req, res) => {
-//     setTimeout(() => {
-//         res.setHeader("Content-Type", "application/json");
-//         res.send(JSON.stringify(
-//             //this is the random stock data [0..100]
-//             { data: Math.round(Math.random() * 100) }
-//         ))
-//     },  Math.round(Math.random() * 2000))
-// });
-
-// Handle DELETE request
+// Handle DELETE request for deleting old images
 app.delete('/camera_images/:imageName', (req, res) => {
     const imageName = req.params.imageName;
     const filePath = path.join(__dirname, 'public/camera_images', imageName);
@@ -217,6 +190,7 @@ app.delete('/camera_images/:imageName', (req, res) => {
     });
 });
 
+//Default port is 3000
 const port = 3000;
 
 
