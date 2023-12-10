@@ -121,21 +121,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
 ---
-# ClusterIP service for crowdy
-apiVersion: v1
-kind: Service
-metadata:
-  name: crowdy-clusterip
-  namespace: crowdy-complete  
-spec:
-  selector:
-    app: crowdy
-  ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
-  type: ClusterIP
----
 # ClusterIP service for privacy-protection
 apiVersion: v1
 kind: Service
