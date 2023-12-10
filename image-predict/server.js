@@ -58,6 +58,8 @@ async function countHeads(filepath) {
     const model = await cocoSsd.load();
     const predictions = await model.detect(tensorImage);
     const count = predictions.filter(pred => pred.class === "person").length;
+    //Free up the memory from the tensor
+    tensorImage.dispose();
     return count;
 }
 
